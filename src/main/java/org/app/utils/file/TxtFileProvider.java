@@ -1,22 +1,27 @@
-package org.app.utils;
+package org.app.utils.file;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class FileProvider {
+public class TxtFileProvider {
 
-    private FileProvider() {};
+    private TxtFileProvider() {};
 
     public static List<String> readLinesOfTxtFile(Path path) throws Exception {
         File file = new File(path.toString());
 
-        FileProvider.checkFileValidity(file);
+        TxtFileProvider.checkFileValidity(file);
+        TxtFileProvider.checkTxtFile(path);
 
-        FileProvider.checkTxtFile(path);
-        List<String> data = Files.readAllLines(path);
+        List<String> data = Files.readAllLines(path)
+                .stream().filter(line -> !line.isEmpty())
+                .collect(Collectors.toList());
+
+        System.out.println("READ ALL LINES: " + data);
 
         return data;
     }

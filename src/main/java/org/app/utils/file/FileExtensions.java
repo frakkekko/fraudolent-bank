@@ -1,4 +1,4 @@
-package org.app.utils;
+package org.app.utils.file;
 
 public enum FileExtensions {
     TXT(".txt"),
