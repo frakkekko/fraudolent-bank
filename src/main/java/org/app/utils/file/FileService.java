@@ -7,15 +7,15 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class TxtFileProvider {
+public class FileService {
 
-    private TxtFileProvider() {};
+    private FileService() {};
 
     public static List<String> readLinesOfTxtFile(Path path) throws Exception {
         File file = new File(path.toString());
 
-        TxtFileProvider.checkFileValidity(file);
-        TxtFileProvider.checkTxtFile(path);
+        FileService.checkFileValidity(file);
+        FileService.checkTxtFile(path);
 
         List<String> data = Files.readAllLines(path)
                 .stream().filter(line -> !line.isEmpty())
@@ -26,7 +26,11 @@ public class TxtFileProvider {
         return data;
     }
 
-    public static void checkTxtFile(Path path) throws Exception {
+    public static void writeTxtOutputFile(Path path, Iterable<String> data) throws IOException {
+        Files.write(path, data);
+    }
+
+    private static void checkTxtFile(Path path) throws Exception {
         int fromIndex = path.toString().lastIndexOf('.');
         String extension = path.toString().substring(fromIndex);
 
@@ -36,7 +40,7 @@ public class TxtFileProvider {
 
     }
 
-    public static void checkFileValidity(File file) throws Exception {
+    private static void checkFileValidity(File file) throws Exception {
         if(!file.exists()) {
             throw new IOException("File does not exist");
         }

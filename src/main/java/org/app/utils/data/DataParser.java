@@ -9,7 +9,7 @@ public class DataParser {
     public static ParsedData parse(List<String> data) {
         data.forEach(entry -> System.out.println(String.format("Entry: '%s' -- isValid: %s", entry, DataParser.isValidEntry(entry))));
 
-        Map[] validDataParsed = data.stream().filter(DataParser::isValidEntry).map(str -> {
+        List<Map<String, String>> validDataParsed = data.stream().filter(DataParser::isValidEntry).map(str -> {
             Map<String, String> extractedValues = new HashMap<>();
             String[] splittedStr = str.split(" ");
 
@@ -19,11 +19,11 @@ public class DataParser {
             extractedValues.put("operation", splittedStr[3]);
 
             return extractedValues;
-        }).toArray(HashMap[]::new);
+        }).toList();
 
-        String[] invalidDataParsed = data.stream().filter(entry -> !DataParser.isValidEntry(entry)).toArray(String[]::new);
+        List<String> invalidDataParsed = data.stream().filter(entry -> !DataParser.isValidEntry(entry)).toList();
 
-        Arrays.stream(validDataParsed).forEach(System.out::println);
+        validDataParsed.forEach(System.out::println);
 
         return new ParsedData(validDataParsed, invalidDataParsed);
     }
