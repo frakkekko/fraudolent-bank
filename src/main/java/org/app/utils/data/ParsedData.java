@@ -1,9 +1,9 @@
 package org.app.utils.data;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ParsedData {
     private final List<Map<String, String>> validDataParsed;
@@ -38,11 +38,11 @@ public class ParsedData {
         return invalidData;
     }
 
-    public Integer getNumberValidEntries() {
+    public Integer getNumberValidOperations() {
         return validDataParsed.size();
     }
 
-    public Integer getNumberNotValidEntries() {
+    public Integer getNumberNotValidOperations() {
         return invalidData.size();
     }
 
@@ -66,17 +66,27 @@ public class ParsedData {
         return (validDataParsed.size() + invalidData.size());
     }
 
+    public Integer getTotalBuyOperation() {
+        return validDataParsed.stream()
+                .filter(dataInfo -> dataInfo.get("operation").equals(DataConfig.BUY_SYMBOL.getValue())).toList().size();
+    }
+
+    public Integer getTotalSellOperation() {
+        return validDataParsed.stream()
+                .filter(dataInfo -> dataInfo.get("operation").equals(DataConfig.SELL_SYMBOL.getValue())).toList().size();
+    }
+
     public List<String> presentValidData() {
         List<String> validData = new ArrayList<>(getValidDataParsedString());
         validData.add(0, "DATA RESULT:");
-        validData.add(String.format("OP: %d -- BUY: %f -- SELL: %f", getTotalOperations(), getTotalBuy(), getTotalSell()));
+        validData.add(String.format("\nOPERATIONS RECAP:\n\t- TOTAL OPERATIONS: %d (BUY %d SELL %d)\n\t- BUY: %f\n\t- SELL: %f", getNumberValidOperations(), getTotalBuyOperation(), getTotalSellOperation(), getTotalBuy(), getTotalSell()));
 
         return validData;
     }
 
     public List<String> presentInvalidData(){
-        List<String> invalidData = new ArrayList<>(getInvalidData());
-        invalidData.add(0, String.format("DATA NOT VALID: (%d records not valid)", getNumberNotValidEntries()));
+        List<String> invalidData = new ArrayList<>(getInvalidData()).stream().map(entry -> String.format("\t- %s", entry)).collect(Collectors.toList());
+        invalidData.add(0, String.format("DATA NOT VALID (%d record/s not valid):\n", getNumberNotValidOperations()));
 
         return invalidData;
     }
