@@ -6,7 +6,6 @@ import java.util.Map;
 
 public class DataParser {
     public static ParsedData parse(List<String> data) {
-        data.forEach(entry -> System.out.println(String.format("Entry: '%s' -- isValid: %s", entry, DataParser.isValidEntry(entry))));
 
         List<Map<String, String>> validDataParsed = data.stream().filter(DataParser::isValidEntry).map(str -> {
             Map<String, String> extractedValues = new HashMap<>();
@@ -21,8 +20,6 @@ public class DataParser {
         }).toList();
 
         List<String> invalidDataParsed = data.stream().filter(entry -> !DataParser.isValidEntry(entry)).toList();
-
-        validDataParsed.forEach(System.out::println);
 
         return new ParsedData(validDataParsed, invalidDataParsed);
     }

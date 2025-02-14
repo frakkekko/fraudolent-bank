@@ -21,8 +21,6 @@ public class FileService {
                 .stream().filter(line -> !line.isEmpty())
                 .collect(Collectors.toList());
 
-        System.out.println("READ ALL LINES: " + data);
-
         return data;
     }
 
