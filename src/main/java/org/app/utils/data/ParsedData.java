@@ -1,14 +1,13 @@
 package org.app.utils.data;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ParsedData {
-    private List<Map<String, String>> validDataParsed;
-    private List<String> invalidData;
+    private final List<Map<String, String>> validDataParsed;
+    private final List<String> invalidData;
 
     private Double cachedSellSum;
     private Double cachedBuySum;
@@ -48,26 +47,37 @@ public class ParsedData {
     }
 
     public Double getTotalSell() {
-        if(cachedSellSum != null) return cachedSellSum;
+        if(cachedSellSum == null) {
+            cachedSellSum = calcSumOperation(DataConfig.SELL_SYMBOL.getValue());
+        }
 
-        return calcSumOperation(DataConfig.SELL_SYMBOL.getValue());
+        return cachedSellSum;
     }
 
     public Double getTotalBuy() {
-        if(cachedBuySum != null) return cachedBuySum;
+        if(cachedBuySum == null) {
+            cachedBuySum = calcSumOperation(DataConfig.BUY_SYMBOL.getValue());
+        }
 
-        return calcSumOperation(DataConfig.BUY_SYMBOL.getValue());
+        return cachedBuySum;
     }
 
     public Integer getTotalOperations() {
         return (validDataParsed.size() + invalidData.size());
     }
 
-    @Override
-    public String toString() {
-        return "ParsedData{" +
-                ", cachedSellSum=" + cachedSellSum +
-                ", cachedBuySum=" + cachedBuySum +
-                '}';
+    public List<String> presentValidData() {
+        List<String> validData = new ArrayList<>(getValidDataParsedString());
+        validData.add(0, "DATA RESULT:");
+        validData.add(String.format("OP: %d -- BUY: %f -- SELL: %f", getTotalOperations(), getTotalBuy(), getTotalSell()));
+
+        return validData;
+    }
+
+    public List<String> presentInvalidData(){
+        List<String> invalidData = new ArrayList<>(getInvalidData());
+        invalidData.add(0, String.format("DATA NOT VALID: (%d records not valid)", getNumberNotValidEntries()));
+
+        return invalidData;
     }
 }
