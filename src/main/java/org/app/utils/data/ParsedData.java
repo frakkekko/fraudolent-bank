@@ -25,6 +25,12 @@ public class ParsedData {
                 .reduce(0.0, Double::sum);
     }
 
+    private Integer getTotalOperationsBySymbolId(DataConfig operationSymbol) {
+
+        return validDataParsed.stream()
+                .filter(dataInfo -> dataInfo.get("operation").equals(operationSymbol.getValue())).toList().size();
+    }
+
     public List<Map<String, String>> getValidDataParsed() {
         return validDataParsed;
     }
@@ -67,13 +73,11 @@ public class ParsedData {
     }
 
     public Integer getTotalBuyOperation() {
-        return validDataParsed.stream()
-                .filter(dataInfo -> dataInfo.get("operation").equals(DataConfig.BUY_SYMBOL.getValue())).toList().size();
+        return getTotalOperationsBySymbolId(DataConfig.BUY_SYMBOL);
     }
 
     public Integer getTotalSellOperation() {
-        return validDataParsed.stream()
-                .filter(dataInfo -> dataInfo.get("operation").equals(DataConfig.SELL_SYMBOL.getValue())).toList().size();
+        return getTotalOperationsBySymbolId(DataConfig.SELL_SYMBOL);
     }
 
     public List<String> presentValidData() {
